@@ -149,3 +149,78 @@ One thing to know (important) is that such a system call is costly! it is not a 
 
 This is exactly what happens when you manage your money. If many people gives you 5 bucks each, you won't go deposit each to the bank! You keep then on your wallet (this is the **print**) up to the point it is full or you don't want to kept them anymore. Then you go to the bank and make a big deposit (this is the **write**). And you know that putting 5 bucks to your wallet is much much faster than going to the bank and make the deposit. The bank is the kernel/OS.
 
+### Header Files
+
+When a library function is referenced in a source file, the related header files (shown in the synopsis for that function) should be included in that source file. The header files provide the proper declarations for the functions and for the number and types of arguments used with them. Constant values used in conjunction with the functions are also declared. The files can be included in any order.
+
+#### `/usr/include`
+
+The following header files are provided with the software. The header files that are located in the `/usr/include` directory are described first.
+
+##### `<fcntl.h>`
+
+This POSIX header file provides the flags used by the *creat()*, *fcntl()*, *open()* and *sopen()* functions.
+
+##### `<unistd.h>`
+
+This POSIX header file contains the declarations for functions that perform input/output operations at the operating system level. These functions use file descriptors to reference files or devices. The function *fstat()* is declared in the `<sys/stat.h>` header file.
+
+#### `/usr/include/sys`
+
+The following header files are present in the `sys` subdirectory. Their presence in this directory indicates that they are system-dependent header files.
+
+##### `<sys/stat.h>`
+
+This POSIX header file contains the declarations pertaining to file status, including definitions for the *fstat()* and *stat()* functions and for the structure:
+
+- `stat`
+
+  describes the information obtained for a directory, file or device
+
+This header file also defines access permission bits for the owner of a file, the owner's group, and other users.
+
+The following bits define permissions for the owner:
+
+| Bit     | Meaning                     |
+| ------- | --------------------------- |
+| S_IRWXU | Read, write, execute/search |
+| S_IRUSR | Read permission             |
+| S_IWUSR | Write permission            |
+| S_IXUSR | Execute/search permission   |
+
+S_IRWXU is the bitwise inclusive OR of S_IRUSR, S_IWUSR, and S_IXUSR.
+
+The following bits define permissions for the group:
+
+| Bit     | Meaning                     |
+| ------- | --------------------------- |
+| S_IRWXG | Read, write, execute/search |
+| S_IRGRP | Read permission             |
+| S_IWGRP | Write permission            |
+| S_IXGRP | Execute/search permission   |
+
+S_IRWXG is the bitwise inclusive OR of S_IRGRP, S_IWGRP and S_IXGRP.
+
+The following bits define permissions for others:
+
+| Bit     | Meaning                     |
+| ------- | --------------------------- |
+| S_IRWXO | Read, write, execute/search |
+| S_IROTH | Read permission             |
+| S_IWOTH | Write permission            |
+| S_IXOTH | Execute/search permission   |
+
+S_IRWXO is the bitwise inclusive OR of S_IROTH, S_IWOTH and S_IXOTH.
+
+The following bits define miscellaneous permissions used by other implementations:
+
+| Bit      | Meaning                                              |
+| -------- | ---------------------------------------------------- |
+| S_IREAD  | is equivalent to S_IRUSR (read permission)           |
+| S_IWRITE | is equivalent to S_IWUSR (write permission)          |
+| S_IEXEC  | is equivalent to S_IXUSR (execute/search permission) |
+
+##### `<sys/types.h>`
+
+This POSIX header file contains declarations for the types used by system-level calls to obtain file status or time information.
+
