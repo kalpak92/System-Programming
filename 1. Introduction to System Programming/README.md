@@ -46,7 +46,7 @@ int main()
 }
 ```
 
-Write a function to print out a triangle of height `n`  to standard error.
+**Write a function to print out a triangle of height `n`  to standard error.**
 
 - Your function should have the signature `void write_triangle(int n)` and should use `write()`.
 - The triangle should look like this, for n = 3:
@@ -57,7 +57,7 @@ Write a function to print out a triangle of height `n`  to standard error.
 ***
 ```
 
-The code is:
+Solution:
 
 ```c
 #include <unistd.h>
@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
 
 ### 3. Writing to files
 
-We use `**open**` to create a file along with the necessary flags and preferred mode. Also don't forget to include the necessary header files.
+We use **`open` **to create a file along with the necessary flags and preferred mode. Also don't forget to include the necessary header files.
 
 ```c
 #include <unistd.h>
