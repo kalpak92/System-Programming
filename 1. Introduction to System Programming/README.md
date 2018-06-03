@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
 
 ### 3. Writing to files
 
-We use **`open`** to create a file along with the necessary flags and preferred mode. Also don't forget to include the necessary header files.
+We use **`open` **to create a file along with the necessary flags and preferred mode. Also don't forget to include the necessary header files.
 
 ```c
 #include <unistd.h>
