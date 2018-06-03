@@ -329,8 +329,6 @@ For examples.
 
 ## Debugging
 
-![1528047721415](C:\Users\kals9\AppData\Local\Temp\1528047721415.png)
-
 Some useful commands:
 
 - **break linenumber** – create breakpoint at specified line
