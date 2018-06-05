@@ -370,4 +370,3 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
   - standard include directories assumed by default
 
 - **include "stdio.h"** – searches ./ for stdio.h first
-
