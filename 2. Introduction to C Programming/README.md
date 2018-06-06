@@ -571,3 +571,7 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
 - **putchar(char)**: print character to stdout
 - **char = getchar()**: return character from stdin
 - **string = gets(string)**: read line from stdin into string
+<<<<<<< HEAD
+=======
+
+>>>>>>> 24aac21257a9bfb82898d6ac7a2b385fd4c5eb86
