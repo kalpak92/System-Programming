@@ -357,6 +357,191 @@ Some useful commands:
 
 - Can appear almost anywhere
 
+## Preprocessor macros
+
+Preprocessor macros begin with # character 
+
+​	`#include <stdio.h>`
+
+`#define msg "hello, 6.087 students" `  -**defines msg as “hello, 6.087 students” throughout source file**
+
+`#define` can take arguments and be treated like a function 
+
+​	`#define add3(x,y,z) ((x)+(y)+(z))`
+
+- parentheses ensure order of operations
+- **compiler performs inline replacement**; not suitable for recursion
+- `#undef` - Undefines a preprocessor macro
+
+### Conditional preprocessor macros
+
+- `#ifdef` - If this macro is defined
+- `#ifndef` - If this macro is not defined
+- `\#if` - Test if a compile time condition is true
+- `\#else`- The alternative for #if
+- `\#elif` - #else an #if in one statement
+- `\#endif` - End preprocessor conditional
+
+#### EXAMPLE PROGRAM FOR CONDITIONAL COMPILATION DIRECTIVES:
+
+###### A) EXAMPLE PROGRAM FOR #IFDEF, #ELSE AND #ENDIF IN C:
+
+- “#ifdef” directive checks whether particular macro is defined or not. If it is defined, “If” clause statements are included in source file.
+- Otherwise, “else” clause statements are included in source file for compilation and execution.
+
+```c
+#include <stdio.h>
+#define RAJU 100
+ 
+int main()
+{
+   #ifdef RAJU
+   printf("RAJU is defined. So, this line will be added in " \
+          "this C file\n");
+   #else
+   printf("RAJU is not defined\n");
+   #endif
+   return 0;
+}
+```
+
+**OUTPUT:**
+
+```shell
+RAJU is defined. So, this line will be added in this C file
+```
+
+###### **B) EXAMPLE PROGRAM FOR** **#IFNDEF AND #ENDIF IN C:**
+
+- \#ifndef exactly acts as reverse as #ifdef directive. If particular macro is not defined, “If” clause statements are included in source file.
+- Otherwise, else clause statements are included in source file for compilation and execution.
+
+```c
+#include <stdio.h>
+#define RAJU 100
+int main()
+{
+   #ifndef SELVA
+   {
+      printf("SELVA is not defined. So, now we are going to " \
+             "define here\n");
+      #define SELVA 300
+   }
+   #else
+   printf("SELVA is already defined in the program”);
+ 
+   #endif
+   return 0;
+ 
+}
+```
+
+**OUTPUT**:
+
+```shell
+SELVA is not defined. So, now we are going to define here
+```
+
+###### C) EXAMPLE PROGRAM FOR #IF, #ELSE AND #ENDIF IN C**:**
+
+- “If” clause statement is included in source file if given condition is true.
+- Otherwise, else clause statement is included in source file for compilation and execution.
+
+```c
+#include <stdio.h>
+#define a 100
+int main()
+{
+   #if (a==100)
+   printf("This line will be added in this C file since " \
+          "a \= 100\n");
+   #else
+   printf("This line will be added in this C file since " \
+          "a is not equal to 100\n");
+   #endif
+   return 0;
+}
+```
+
+**OUTPUT:**
+
+```shell
+This line will be added in this C file since a = 100
+```
+
+###### D) EXAMPLE PROGRAM FOR UNDEF IN C LANGUAGE:
+
+This directive undefines existing macro in the program.
+
+```c
+#include <stdio.h>
+ 
+#define height 100
+void main()
+{
+   printf("First defined value for height    : %d\n",height);
+   #undef height          // undefining variable
+   #define height 600     // redefining the same for new value
+   printf("value of height after undef \& redefine:%d",height);
+}
+```
+
+**OUTPUT**:
+
+```shell
+First defined value for height : 100
+value of height after undef & redefine : 600
+```
+
+###### E) EXAMPLE PROGRAM FOR PRAGMA IN C LANGUAGE:
+
+Pragma is used to call a function before and after main function in a C program
+
+```c
+#include <stdio.h>
+ 
+void function1( );
+void function2( );
+ 
+#pragma startup function1
+#pragma exit function2
+ 
+int main( )
+{
+   printf ( "\n Now we are in main function" ) ;
+   return 0;
+}
+ 
+void function1( )
+{
+   printf("\nFunction1 is called before main function call");
+}
+ 
+void function2( )
+{
+   printf ( "\nFunction2 is called just before end of " \
+            "main function" ) ;"
+}
+```
+
+**OUTPUT**:
+
+```shell
+Function1 is called before main function call
+Now we are in main function
+Function2 is called just before end of main function
+```
+
+###### MORE ON PRAGMA DIRECTIVE IN C LANGUAGE:
+
+| **Pragma command**                                           | **Description**                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| #Pragma                                                             startup<function_name_1> | This directive executes function named “function_name_1” before |
+| #Pragma                                                                  exit<function_name_2> | This directive executes function named “function_name_2” just before termination of the program. |
+| #pragma warn – rvl                                           | If function doesn’t return a value, then warnings are suppressed by this directive while compiling. |
+| #pragma warn – par                                           | If function doesn’t use passed function parameter , then warnings are suppressed |
+| #pragma warn – rch                                           | If a non reachable code is written inside a program, such warnings are suppressed by this directive. |
+
 ## Why do we use '`#include <stdio.h>`'?
 
 We're lazy! We don't want to declare the `printf` function. It's already done for us inside the file '`stdio.h`'. The `#include` includes the text of the file as part of our file to be compiled.
@@ -368,5 +553,21 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
 - Included files must be on include path 
   - -Idirectory with gcc: specify additional include directories
   - standard include directories assumed by default
-
 - **include "stdio.h"** – searches ./ for stdio.h first
+
+
+## The main() function
+
+- main(): entry point for C program
+- Simplest version: no inputs, outputs 0 when successful, and nonzero to signal some error 
+  - **int main(void);**
+- Two-argument form of main(): access command-line arguments 
+  - **int main(int argc, char ∗∗argv);**
+
+## Console I/O
+
+- **stdout, stdin**: console output and input streams
+- **puts(string)**: print string to stdout
+- **putchar(char)**: print character to stdout
+- **char = getchar()**: return character from stdin
+- **string = gets(string)**: read line from stdin into string
