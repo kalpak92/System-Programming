@@ -384,7 +384,7 @@ Preprocessor macros begin with # character
 
 #### EXAMPLE PROGRAM FOR CONDITIONAL COMPILATION DIRECTIVES:
 
-###### A) EXAMPLE PROGRAM FOR #IFDEF, #ELSE AND #ENDIF IN C:
+##### A) Example of #IFDEF, #ELSE AND #ENDIF IN C:
 
 - “#ifdef” directive checks whether particular macro is defined or not. If it is defined, “If” clause statements are included in source file.
 - Otherwise, “else” clause statements are included in source file for compilation and execution.
@@ -411,7 +411,7 @@ int main()
 RAJU is defined. So, this line will be added in this C file
 ```
 
-###### **B) EXAMPLE PROGRAM FOR** **#IFNDEF AND #ENDIF IN C:**
+##### **B) Example of** **#IFNDEF AND #ENDIF IN C:**
 
 - \#ifndef exactly acts as reverse as #ifdef directive. If particular macro is not defined, “If” clause statements are included in source file.
 - Otherwise, else clause statements are included in source file for compilation and execution.
@@ -442,7 +442,7 @@ int main()
 SELVA is not defined. So, now we are going to define here
 ```
 
-###### C) EXAMPLE PROGRAM FOR #IF, #ELSE AND #ENDIF IN C**:**
+##### C) Example of #IF, #ELSE AND #ENDIF IN C**:**
 
 - “If” clause statement is included in source file if given condition is true.
 - Otherwise, else clause statement is included in source file for compilation and execution.
@@ -469,7 +469,7 @@ int main()
 This line will be added in this C file since a = 100
 ```
 
-###### D) EXAMPLE PROGRAM FOR UNDEF IN C LANGUAGE:
+##### D) Example of #UNDEF IN C LANGUAGE:
 
 This directive undefines existing macro in the program.
 
@@ -493,7 +493,7 @@ First defined value for height : 100
 value of height after undef & redefine : 600
 ```
 
-###### E) EXAMPLE PROGRAM FOR PRAGMA IN C LANGUAGE:
+##### E) Example of PRAGMA IN C LANGUAGE:
 
 Pragma is used to call a function before and after main function in a C program
 
@@ -532,7 +532,7 @@ Now we are in main function
 Function2 is called just before end of main function
 ```
 
-###### MORE ON PRAGMA DIRECTIVE IN C LANGUAGE:
+###### More on PRAGMA directive in C LANGUAGE:
 
 | **Pragma command**                                           | **Description**                                              |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -571,3 +571,4 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
 - **putchar(char)**: print character to stdout
 - **char = getchar()**: return character from stdin
 - **string = gets(string)**: read line from stdin into string
+
