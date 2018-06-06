@@ -542,7 +542,7 @@ Function2 is called just before end of main function
 | #pragma warn – par                                           | If function doesn’t use passed function parameter , then warnings are suppressed |
 | #pragma warn – rch                                           | If a non reachable code is written inside a program, such warnings are suppressed by this directive. |
 
-## Why do we use '`#include <stdio.h>`'?
+### Why do we use '`#include <stdio.h>`'?
 
 We're lazy! We don't want to declare the `printf` function. It's already done for us inside the file '`stdio.h`'. The `#include` includes the text of the file as part of our file to be compiled.
 
@@ -555,6 +555,30 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
   - standard include directories assumed by default
 - **include "stdio.h"** – searches ./ for stdio.h first
 
+### Problem
+
+Consider the statement:
+
+```c
+double ans = 18.0/squared(2+1); 
+```
+
+For each of the four versions of the function macro squared() below, write the corresponding value of ans.
+
+```c
+1. #define squared(x) x**x
+Answer: 18.0/2 + 1 ∗ 2 + 1 = 9 + 2 + 1 = 12. 
+
+2. #define squared(x) (x*x) 
+Answer: 18.0/(2 + 1 ∗ 2 + 1) = 18/5 = 3.6.
+    
+3. #define squared(x) (x)*(x)
+Answer: 18.0/(2 + 1) ∗ (2 + 1) = 6 ∗ 3 = 18.
+    
+4. #define squared(x) ((x)*(x))
+Answer: 18.0/((2 + 1) ∗ (2 + 1)) = 18/9 = 2.
+```
+
 
 ## The main() function
 
@@ -563,6 +587,14 @@ Specifically, the `#include` directive takes the file `stdio.h` (which stands fo
   - **int main(void);**
 - Two-argument form of main(): access command-line arguments 
   - **int main(int argc, char ∗∗argv);**
+
+### Question
+
+**Describe the difference between the literal values 7, "7", and ’7’.** 
+
+- The first literal describes an integer of value 7. 
+- The second describes a null-terminated string consisting of the character ’7’. 
+- The third describes the character ’7’, whose value is its ASCII character code (55). 
 
 ## Console I/O
 
