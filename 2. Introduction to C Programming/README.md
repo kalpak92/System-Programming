@@ -454,7 +454,7 @@ int main()
 {
    #if (a==100)
    printf("This line will be added in this C file since " \
-          "a \= 100\n");
+          "a = 100\n");
    #else
    printf("This line will be added in this C file since " \
           "a is not equal to 100\n");
@@ -482,7 +482,7 @@ void main()
    printf("First defined value for height    : %d\n",height);
    #undef height          // undefining variable
    #define height 600     // redefining the same for new value
-   printf("value of height after undef \& redefine:%d",height);
+   printf("value of height after undef & redefine:%d",height);
 }
 ```
 
