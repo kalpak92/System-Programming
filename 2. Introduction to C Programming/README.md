@@ -1067,6 +1067,36 @@ Use () generously to avoid ambiguities or side effects associated with precenden
 
    Answer
 
+   ```c
+   #include <stdio.h>
+   #include <limits.h>
+   #include <float.h>
+    
+   int main() 
+   {
+    
+   	printf("The number of bits in a byte %d\n", CHAR_BIT);
+    
+   	printf("The minimum value of SIGNED CHAR = %d\n", SCHAR_MIN);
+   	printf("The maximum value of SIGNED CHAR = %d\n", SCHAR_MAX);
+   	printf("The maximum value of UNSIGNED CHAR = %d\n", UCHAR_MAX);
+    
+   	printf("The minimum value of SHORT INT = %d\n", SHRT_MIN);
+   	printf("The maximum value of SHORT INT = %d\n", SHRT_MAX); 
+    
+   	printf("The minimum value of INT = %d\n", INT_MIN);
+   	printf("The maximum value of INT = %d\n", INT_MAX);
+    
+   	printf("The minimum value of CHAR = %d\n", CHAR_MIN);
+   	printf("The maximum value of CHAR = %d\n", CHAR_MAX);
+    
+   	printf("The minimum value of LONG = %ld\n", LONG_MIN);
+   	printf("The maximum value of LONG = %ld\n", LONG_MAX);
+    
+      return 0;
+   }
+   ```
+
    On my 32-bit machine ( /usr/include/limits.h, /usr/include/float.h), the sizes and limits are as follows. Results may differ if you used a 64 bit machine.
 
 |   Data Type   | size (bytes) |          min           |          max           |
@@ -1099,7 +1129,7 @@ Use () generously to avoid ambiguities or side effects associated with precenden
 
 3. Using precedence rules, evaluate the following expressions and determine the value of the variables (without running the code). Also rewrite them using parenthesis to make the order explicit.
 
-   ​	(a) Assume (x=0xFF33,MASK=0xFF00). Expression: **c=x & MASK ==0;**
+    	​	(a) Assume (x=0xFF33,MASK=0xFF00). Expression: **c=x & MASK ==0;**
 
    ​	(b) Assume (x=10, y=2,z=2;). Expression: **z=y=x++ + ++y∗2;** 
 
