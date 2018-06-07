@@ -1099,7 +1099,7 @@ Use () generously to avoid ambiguities or side effects associated with precenden
 
 3. Using precedence rules, evaluate the following expressions and determine the value of the variables (without running the code). Also rewrite them using parenthesis to make the order explicit.
 
-    	(a) Assume (x=0xFF33,MASK=0xFF00). Expression: **c=x & MASK ==0;**
+   ​	(a) Assume (x=0xFF33,MASK=0xFF00). Expression: **c=x & MASK ==0;**
 
    ​	(b) Assume (x=10, y=2,z=2;). Expression: **z=y=x++ + ++y∗2;** 
 
