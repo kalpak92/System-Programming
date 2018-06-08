@@ -104,6 +104,127 @@ gcc -v -o hello.exe hello.c
 
 You can use the `-D*name*` option to define a macro, or `-D*name*=*value*` to define a macro with a value. The `*value*` should be enclosed in double quotes if it contains spaces.
 
+### Most Frequently Used GCC Compiler Command Line Options
+
+1. #### Specify the Output Executable Name
+
+   Use option -o, as shown below, to specify the output file name for the executable.
+
+   ```shell
+   gcc main.c -o main
+   ```
+
+   The command above would produce an output file with name ‘main’.
+
+2. #### Enable all warnings set through -Wall option
+
+   ```shell
+    gcc -Wall main.c -o main
+   ```
+
+3. ### Produce only the preprocessor output with -E option
+
+   The output of preprocessing stage can be produced using the -E option.
+
+   ```shell
+   $ gcc -E main.c > main.i
+   ```
+
+   The gcc command produces the output on stdout so you can redirect the output in any file. In our case(above), the file main.i would contain the preprocessed output.
+
+4. ### Produce only the assembly code using -S option
+
+   The assembly level output can be produced using the -S option.
+
+   ```shell
+   gcc -S main.c > main.s
+   ```
+
+   In this case, the file main.s would contain the assembly output.
+
+5. ### Produce only the compiled code using the -C option
+
+   To produce only the compiled code (without any linking), use the -C option.
+
+   ```shell
+   gcc -C main.c
+   ```
+
+   The command above would produce a file main.o that would contain machine level code or the compiled code.
+
+6. ### Produce all the intermediate files using -save-temps function
+
+   The option -save-temps can do all the work done in example 4,5 and 6 above. Through this option, output at all the stages of compilation is stored in the current directory. Please note that this option produces the executable also.
+
+   For example :
+
+   ```shell
+   $ gcc -save-temps main.c
+
+   $ ls
+   a.out  main.c  main.i  main.o  main.s
+   ```
+
+   So we see that all the intermediate files as well as the final executable was produced in the output.
+
+7. ### Link with shared libraries using -l option
+
+   The option -l can be used to link with shared libraries. For example:
+
+   ```shell
+   gcc  -Wall main.c -o main -lCPPfile
+   ```
+
+   The gcc command mentioned above links the code main.c with the shared library libCPPfile.so to produce the final executable ‘main’.
+
+8. ### Create position independent code using -fPIC option
+
+   While creating the shared libraries, position independent code should be produced. This helps the shared library to get loaded as any address instead of some fixed address. For this -fPIC option is used.
+
+   For example, the following commands create a shared library libCfile.so from source file Cfile.c:
+
+   ```shell
+   $ gcc -c -Wall -Werror -fPIC Cfile.c
+   $ gcc -shared -o libCfile.so Cfile.o
+   ```
+
+9. ### Print all the executed commands using -V option
+
+   The option -v can be used to provide verbose information on all the steps gcc takes while compiling a source file.
+
+   For example :
+
+   ```shell
+   $ gcc -Wall -v main.c -o main
+   Using built-in specs.
+   COLLECT_GCC=gcc
+   COLLECT_LTO_WRAPPER=/usr/lib/gcc/i686-linux-gnu/4.6/lto-wrapper
+   Target: i686-linux-gnu
+   Configured with: ../src/configure -v --with-pkgversion='Ubuntu/Linaro 4.6.3-1ubuntu5' --with-bugurl=file:///usr/share/doc/gcc-4.6/README.Bugs --enable-languages=c,c++,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.6 --enable-shared --enable-linker-build-id --with-system-zlib --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.6 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --enable-gnu-unique-object --enable-plugin --enable-objc-gc --enable-targets=all --disable-werror --with-arch-32=i686 --with-tune=generic --enable-checking=release --build=i686-linux-gnu --host=i686-linux-gnu --target=i686-linux-gnu
+   Thread model: posix
+   gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
+   ...
+   ...
+   ...
+   ```
+
+   So we see that detailed information was produced in the output.
+
+10. ### Convert warnings into errors with -Werror option
+
+    Through this option, any warning that gcc could report gets converted into error.
+
+    The compilation of above code should generate warning related to undefined variable c and this should get converted into error by using -Werror option.
+
+    ```shell
+    $ gcc -Wall -Werror main.c -o main
+    main.c: In function â€˜mainâ€™:
+    main.c:7:10: error: â€˜câ€™ is used uninitialized in this function [-Werror=uninitialized]
+    cc1: all warnings being treated as errors
+    ```
+
+
+
 ### Headers (.h), Static Libraries (.lib, .a) and Shared Library (.dll, .so)
 
 ##### Static Library vs. Shared Library
