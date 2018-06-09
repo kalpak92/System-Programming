@@ -164,3 +164,192 @@ long arr [5]; /∗ sizeof(arr) == 40 ∗/ (64-bit OS)
   - **char ∗ strchr(str ,c);** – find char c in str, return pointer to first occurrence, or NULL if not found
   - **char ∗ strrchr (str ,c);** – find char c in str, return pointer to last occurrence, or NULL if not found
 
+# User defined datatype
+
+## Structure
+
+Definition: A structure is a collection of related variables (of possibly different types) grouped together under a single name.
+This is a an example of composition–building complex structures out of simple ones.
+
+```c
+struct point
+{
+    int x;
+    int y;
+};
+
+struct employee
+{
+    char name[100];
+    char lname[100];
+    int age;
+};
+```
+
+- struct defines a new datatype.
+
+- The name of the structure is optional.
+
+  **struct {...} x,y,z;**
+
+- The variables declared within a structure are called its  members.
+
+- Variables can be declared like any other built in data-type.
+
+  **struct point ptA;**
+
+- Initialization is done by specifying values of every member.
+
+  **struct point ptA={10,20};**
+
+- Assignment operator copies every member of the structure (be careful with pointers).
+
+```c
+/* Members can be structures */
+struct triangle
+{
+    struct point ptA;
+    struct point ptB;
+    struct point ptC;
+};
+
+/* Members can be self referential */
+struct chain_element
+{
+    int data;
+    struct chain_element  *next;
+};
+```
+
+- Individual members can be accessed using **’.’** operator.
+
+  ***struct point pt={10,20}; ***
+
+  ***int x=pt.x; int y=pt.y;***
+
+- **If structure is nested, multiple ’.’ are required**
+
+```c
+struct rectangle
+{
+	struct point t l ; / ∗ top l e f t ∗ /
+	struct point br ; / ∗ bot right ∗ /
+};
+struct rectangle rect ;
+int tlx = rect.tl.x ; / ∗ nested ∗ /
+int tly = rect.tl.y ;
+```
+
+### Structure pointers
+
+- Structures are copied element wise.
+
+- For large structures it is more efficient to pass pointers.
+
+  ***void foo(struct point ∗ pp);*** 
+
+  ***struct point pt;*** 
+
+  ***foo(&pt)***
+
+- Members can be accesses from structure pointers using ’->’ operator.
+
+```c
+struct point p={10 ,20};
+struct point ∗ pp=&p ;
+pp−>x = 10; / ∗ changes p . x ∗ /
+int y= pp−>y ; / ∗ same as y=p. y ∗ /
+```
+
+- Other ways to access structure members?
+
+```c
+struct point p={10 ,20};
+struct point ∗ pp=&p ;
+(∗ pp ). x = 10; / ∗ changes p . x ∗ /
+int y= (∗ pp ). y ; / ∗ same as y=p. y ∗ /
+```
+
+### Arrays of structures
+
+- Declaring arrays of int: int x[10];
+- Declaring arrays of structure: struct point p[10];
+- Initializing arrays of int: int x [4]={0,20,10,2};
+- Initializing arrays of structure:
+
+​	***struct point p[3] = {{0,1}, {10,20}, {30,12}};**
+
+### Size of structures
+
+- The size of a structure is greater than or equal to the sum of the sizes of its members.
+- Alignment
+
+```c
+struct {
+char c ;
+/ ∗ padding ∗ /
+int i ;
+```
+
+- Why is this an important issue? libraries, precompiled files, SIMD instructions.
+
+- Members can be explicitly aligned using compiler extensions.
+
+  \__attribute__((aligned(x))) 	/∗gcc∗/
+  __declspec((aligned(x))) 	/∗MSVC∗/
+
+## Union
+
+A union is a variable that may hold objects of different types/sizes in the same memory location. 
+
+Example:
+
+```c
+union data
+{
+	int idata ;
+	float fdata ;
+	char∗ sdata ;
+} d1 ,d2 ,d3;
+
+d1. idata =10;
+d1. fdata =3.14F;
+d1. sdata="hello world" ;
+```
+
+- The size of the union variable is equal to the size of its largest element.
+
+- Important: The compiler does not test if the data is being read in the correct format.
+
+  union data d; 
+
+  d.idata=10; float f=d.fdata; /∗ will give junk
+
+- A common solution is to maintain a separate variable.
+
+```c
+enum dtype {INT ,FLOAT,CHAR};
+struct variant
+{
+	union data d;
+	enum dtype t ;
+};
+```
+
+## Bit fields
+
+Definition: A bit-field is a set of adjacent bits within a single ’word’. 
+
+Example:
+
+```
+struct flag {
+unsigned i n t is _color :1;
+unsigned i n t has_sound : 1 ;
+unsigned i n t is _ntsc :1;
+};
+```
+
+- the number after the colons specifies the width in bits.
+- each variables should be declared as **unsigned int**
+
