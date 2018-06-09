@@ -228,7 +228,7 @@ We split the code into several files: main.c, dict.c, and dict.h. The contents o
 
 main.c: 
 
-![Modular programming q1](C:\Users\kals9\Desktop\System Programming\2. Introduction to C Programming\Modular programming q1.PNG)
+![Modular programming q1](https://github.com/kalpak92/System-Programming/blob/master/2.%20Introduction%20to%20C%20Programming/Modular%20programming%20q1.PNG)
 
 1. In implementing this program, you want to access the global variable the dictionary from main.c, as well as from dict.c. However, due to the header file’s inclusion in both source documents, the variable gets declared in both places, creating an ambiguity. How would you resolve this ambiguity?
 
