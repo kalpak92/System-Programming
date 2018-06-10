@@ -483,6 +483,191 @@ int main()
 }
 ```
 
+## Dangling, Void, Null and Wild Pointers
+
+### Dangling pointer
+
+A pointer pointing to a memory location that has been deleted (or freed) is called dangling pointer. There are **three** different ways where Pointer acts as dangling pointer.
+
+- **De-allocation of memory**
+
+  ```c
+  // Deallocating a memory pointed by ptr causes
+  // dangling pointer
+  #include <stdlib.h>
+  #include <stdio.h>
+  int main()
+  {
+      int *ptr = (int *)malloc(sizeof(int));
+   
+      // After below free call, ptr becomes a 
+      // dangling pointer
+      free(ptr); 
+       
+      // No more a dangling pointer
+      ptr = NULL;
+  }
+  ```
+
+- **Function Call**
+
+  ```c
+  // The pointer pointing to local variable becomes
+  // dangling when local variable is static.
+  #include<stdio.h>
+   
+  int *fun()
+  {
+      // x is local variable and goes out of
+      // scope after an execution of fun() is
+      // over.
+      int x = 5;
+   
+      return &x;
+  }
+   
+  // Driver Code
+  int main()
+  {
+      int *p = fun();
+      fflush(stdin);
+   
+      // p points to something which is not
+      // valid anymore
+      printf("%d", *p);
+      return 0;
+  }
+  ```
+
+  Output
+
+  ```shell
+  A garbage Address 
+  ```
+
+  The above problem doesn’t appear (or p doesn’t become dangling) if x is a static variable. 
+
+  ```c
+  // The pointer pointing to local variable doesn't
+  // become dangling when local variable is static.
+  #include<stdio.h>
+   
+  int *fun()
+  {
+      // x now has scope throughout the program
+      static int x = 5;
+   
+      return &x;
+  }
+   
+  int main()
+  {
+      int *p = fun();
+      fflush(stdin);
+       
+      // Not a dangling pointer as it points
+      // to static variable.
+      printf("%d",*p);
+  }
+  ```
+
+  Output
+
+  ```shell
+  5
+  ```
+
+- **Variable goes out of scope** 
+
+  ```c
+  void main()
+  {
+     int *ptr;
+     .....
+     .....
+     {
+         int ch;
+         ptr = &ch;
+     } 
+     .....   
+     // Here ptr is dangling pointer
+  }
+  ```
+
+### Void pointer
+
+Void pointer is a specific pointer type – void * – a pointer that points to some data location in storage, which doesn’t have any specific type. Void refers to the type. Basically the type of data that it points to is can be any. If we assign address of char data type to void pointer it will become char Pointer, if int data type then int pointer and so on. Any pointer type is convertible to a void pointer hence it can point to any value.
+Important Points
+
+- void pointers **cannot be dereferenced**. It can however be done using typecasting the void pointer
+- Pointer arithmetic is not possible on pointers of void due to lack of concrete value and thus size.
+
+```c
+#include<stdlib.h>
+#inlcude <stdio.h>
+ 
+int main()
+{
+    int x = 4;
+    float y = 5.5;
+     
+    //A void pointer
+    void *ptr;
+    ptr = &x;
+ 
+    // (int*)ptr - does type casting of void 
+    // *((int*)ptr) dereferences the typecasted 
+    // void pointer variable.
+    printf("Integer variable is = %d", *( (int*) ptr) );
+ 
+    // void pointer is now float
+    ptr = &y; 
+    printf("\nFloat variable is= %f", *( (float*) ptr) );
+ 
+    return 0;
+}
+
+```
+
+### NULL Pointer
+
+NULL Pointer is a pointer which is pointing to nothing. In case, if we don’t have address to be assigned to a pointer, then we can simply use NULL.
+
+```c
+#include <stdio.h>
+int main()
+{
+    // Null Pointer
+    int *ptr = NULL;
+     
+    printf("The value of ptr is %u", ptr);
+    return 0;
+}
+```
+
+**Important Points**
+
+- **NULL vs Uninitialized pointer –** An uninitialized pointer stores an undefined value. A null pointer stores a defined value, but one that is defined by the environment to not be a valid address for any member or object.
+- **NULL vs Void Pointer** – Null pointer is a value, while void pointer is a type
+
+### Wild pointer
+
+A pointer which has not been initialized to anything (not even NULL) is known as wild pointer. The pointer may be initialized to a non-NULL garbage value that may not be a valid address.
+
+```c
+int main()
+{
+    int *p;  /* wild pointer */
+ 
+    int x = 10;
+ 
+    // p is not a wild pointer now
+    p = &x;
+ 
+    return 0;
+}
+```
+
 ## Strings as arrays
 
 - Strings stored as null-terminated character arrays (last character == ’\0’)
@@ -696,7 +881,7 @@ int y= (∗ pp ). y ; / ∗ same as y=p. y ∗ /
 - Initializing arrays of int: int x [4]={0,20,10,2};
 - Initializing arrays of structure:
 
-​	***struct point p[3] = {{0,1}, {10,20}, {30,12}};**
+		***struct point p[3] = {{0,1}, {10,20}, {30,12}};**
 
 ### Size of structures
 
@@ -1305,5 +1490,195 @@ Example:
 ```c
 void∗ p; printf ("%d",∗p); /∗ invalid ∗/
 void∗ p; int ∗px=(int∗)p; printf ("%d",∗px); /∗valid ∗/
+```
+
+# Function pointers
+
+- In some programming languages, functions are first class variables (can be passed to functions, returned from functions etc.).
+
+- In C, function itself is not a variable. But it is possible to declare pointer to functions.
+
+- Declaration examples:
+
+  ```c
+  int (∗fp )( int ) /∗notice the () ∗/
+  int (∗fp )(void∗,void∗)
+  ```
+
+  Why do we need an extra bracket around function pointers like fun_ptr in above example?  
+
+  If we remove bracket, then the expression “void (*fun_ptr)(int)” becomes “void *fun_ptr(int)” which is declaration of a function that returns void pointer. 
+
+- Function pointers can be assigned, pass to and from functions, placed in arrays etc.
+
+Example
+
+```c
+#include <stdio.h>
+// A normal function with an int parameter
+// and void return type
+void fun(int a)
+{
+    printf("Value of a is %d\n", a);
+}
+ 
+int main()
+{
+    // fun_ptr is a pointer to function fun() 
+    void (*fun_ptr)(int) = &fun;
+ 
+    /* The above line is equivalent of following two
+       void (*fun_ptr)(int);
+       fun_ptr = &fun; 
+    */
+ 
+    // Invoking fun() using fun_ptr
+    (*fun_ptr)(10);
+ 
+    return 0;
+}
+```
+
+Output
+
+```shell
+Value of a is 10
+```
+
+### Some interesting facts about Function Pointers
+
+1. Unlike normal pointers, a function pointer points to code, not data. Typically a function pointer stores the start of executable code.
+
+2. Unlike normal pointers, we do not allocate de-allocate memory using function pointers.
+
+3. A function’s name can also be used to get functions’ address. For example, in the below program, we have removed address operator ‘&’ in assignment. We have also changed function call by removing *, the program still works.
+
+   ```c
+   #include <stdio.h>
+   // A normal function with an int parameter
+   // and void return type
+   void fun(int a)
+   {
+       printf("Value of a is %d\n", a);
+   }
+    
+   int main()
+   { 
+       void (*fun_ptr)(int) = fun;  // & removed
+    
+       fun_ptr(10);  // * removed
+    
+       return 0;
+   }
+   ```
+
+4. Function pointer can be used in place of switch case. For example, in below program, user is asked for a choice between 0 and 2 to do different tasks.
+
+   ```c
+   #include <stdio.h>
+   void add(int a, int b)
+   {
+       printf("Addition is %d\n", a+b);
+   }
+   void subtract(int a, int b)
+   {
+       printf("Subtraction is %d\n", a-b);
+   }
+   void multiply(int a, int b)
+   {
+       printf("Multiplication is %d\n", a*b);
+   }
+    
+   int main()
+   {
+       // fun_ptr_arr is an array of function pointers
+       void (*fun_ptr_arr[])(int, int) = {add, subtract, multiply};
+       unsigned int ch, a = 15, b = 10;
+    
+       printf("Enter Choice: 0 for add, 1 for subtract and 2 "
+               "for multiply\n");
+       scanf("%d", &ch);
+    
+       if (ch > 2) return 0;
+    
+       (*fun_ptr_arr[ch])(a, b);
+    
+       return 0;
+   }
+   ```
+
+5. Like normal data pointers, a function pointer can be passed as an argument and can also be returned from a function.  For example, consider the following C program where wrapper() receives a void fun() as parameter and calls the passed function. 
+
+   ```c
+   // A simple C program to show function pointers as parameter
+   #include <stdio.h>
+    
+   // Two simple functions
+   void fun1() { printf("Fun1\n"); }
+   void fun2() { printf("Fun2\n"); }
+    
+   // A function that receives a simple function
+   // as parameter and calls the function
+   void wrapper(void (*fun)())
+   {
+       fun();
+   }
+    
+   int main()
+   {
+       wrapper(fun1);
+       wrapper(fun2);
+       return 0;
+   }
+   ```
+
+### Callbacks
+
+Callback is a piece of executable code passed to functions. In C, callbacks are implemented by passing function pointers.
+
+You call a function `f()` passing the address of another function `g()`, and `f()` calls `g()` for some specific task. If you pass `f()` the address of `h()`instead, then `f()` will call back `h()` instead. 
+
+Basically, this is a way to **\*parametrize***  a function: Some part of its behavior is not hard-coded into `f()`, but into the callback function. Callers can make `f()` behave differently by passing different callback functions.
+
+### Where Function pointers are stored ?
+
+It depends on where you declare it. It is generally stored on the stack, just like sum or any other local variables, like if you had a char * or int * variable. You could dynamically allocate space for a function pointer, and have it be stored on the heap, or declare it as a global or static local, and have it be stored with the other global and static local variables, but that is less common.    
+
+Remember, a function pointer is just a pointer, so all it contains is the address. It doesn't store the function itself (i.e. no code or variables).
+
+### Array of function pointers
+
+Consider the case where different functions are called based on a value.
+
+```c
+enum TYPE{SQUARE,RECT,CIRCILE ,POLYGON};
+struct shape {
+	float params[MAX] ;
+	enum TYPE type ;
+};
+void draw ( struct shape∗ ps )
+{
+	switch ( ps−>type )
+	{
+		case SQUARE:
+			draw_square (ps ); break ;
+		case RECT:
+			draw_rect (ps ); break ;
+. . .
+	}
+}
+```
+
+The same can be done using an array of function pointers instead.
+
+```c
+void (∗ fp [ 4 ] ) ( struct shape∗ ps)= {&draw_square ,&draw_rec ,& draw_circle ,&draw_poly };
+typedef void (∗ fp )( struct shape∗ ps) drawfn ;
+drawfn fp [4] = {&draw_square ,&draw_rec ,& draw_circle ,&draw_poly };
+
+void draw ( struct shape∗ ps )
+{
+	(∗ fp [ps−>type ] ) ( ps ); / ∗ call the correct function ∗ /
+}
 ```
 
