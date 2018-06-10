@@ -130,6 +130,359 @@ long arr [5]; /∗ sizeof(arr) == 40 ∗/ (64-bit OS)
 #define array _length ( arr ) ( sizeof ( arr ) == 0 ? 0 : sizeof ( arr )/ sizeof (( arr ) [ 0 ] ) )
 ```
 
+## Pointer vs Array  
+
+Most of the time, pointer and array accesses can be treated as acting the same, the major exceptions being:
+
+- the **sizeof operator**
+  - **sizeof(array)** returns the amount of memory used by all elements in array
+  - **sizeof(pointer)** only returns the amount of memory used by the pointer variable itself
+
+- the & operator
+  - &array is an alias for &array[0] and returns the *address of the first element in array*
+  - &pointer returns *the address of pointer*.
+
+- a string literal initialization of a character array
+  - char array[] = “abc” sets the ***first four elements in array to ‘a’, ‘b’, ‘c’, and ‘\0’***
+  - char *pointer = “abc” sets ***pointer to the address of the “abc”*** string (which may be stored in read-only memory and thus unchangeable)
+
+- Pointer variable can be assigned a value whereas array variable cannot be.
+
+  ​	int a[10];
+
+  ​	int *p; 
+
+  ​	p=a; /*legal*/
+
+  ​	a=p; /*illegal*/ 
+
+- Arithmetic on pointer variable is allowed.
+
+  ​	p++; /*Legal*/
+
+  ​	a++; /*illegal*/ 
+
+- Behavior of sizeof operator
+
+  ```c
+  // 1st program to show that array and pointers are different
+  #include <stdio.h>
+  int main()
+  {
+     int arr[] = {10, 20, 30, 40, 50, 60};
+     int *ptr = arr;
+      
+     // sizof(int) * (number of element in arr[]) is printed
+     printf("Size of arr[] %d\n", sizeof(arr));
+   
+     // sizeof a pointer is printed which is same for all type 
+     // of pointers (char *, void *, etc)
+     printf("Size of ptr %d", sizeof(ptr));
+     return 0;
+  }
+  ```
+
+  Output
+
+  ```shell
+  Size of arr[] 24
+  Size of ptr 4
+  ```
+
+- Assigning any address to an array variable is not allowed.
+
+  ```c
+  #include <stdio.h>
+  int main()
+  {
+     int arr[] = {10, 20}, x = 10;
+     int *ptr = &x; // This is fine
+     arr = &x;  // Compiler Error
+     return 0;
+  }
+  ```
+
+  Output:
+
+  ```shell
+   Compiler Error: incompatible types when assigning to 
+   	type 'int[2]' from type 'int *'   
+  ```
+
+### Similarities
+
+- Array name gives address of first element of array.  
+
+  Consider the following program for example. 
+
+  ```c
+  #include <stdio.h>
+  int main()
+  {
+     int arr[] = {10, 20, 30, 40, 50, 60};
+     int *ptr = arr;  // Assigns address of array to ptr
+     printf("Value of first element is %d", *ptr);
+     return 0;
+  }
+  ```
+
+  Output
+
+  ```shell
+  Value of first element is 10
+  ```
+
+- Array members are accessed using pointer arithmetic.  
+
+  Compiler uses pointer arithmetic to access array element. For example, an expression like “arr[i]” is treated as *(arr + i) by the compiler. That is why the expressions like *(arr + i) work for array arr, and expressions like ptr[i] also work for pointer ptr.
+
+  ```c
+  #include <stdio.h>
+  int main()
+  {
+     int arr[] = {10, 20, 30, 40, 50, 60};
+     int *ptr = arr;
+     printf("arr[2] = %d\n", arr[2]);
+     printf("*(arr + 2) = %d\n", *(arr + 2));
+     printf("ptr[2] = %d\n", ptr[2]);
+     printf("*(ptr + 2) = %d\n", *(ptr + 2));
+     return 0;
+  }
+  ```
+
+  Output
+
+  ```shell
+  arr[2] = 30
+  *(arr + 2) = 30
+  ptr[2] = 30
+  *(ptr + 2) = 30
+  ```
+
+- Array parameters are always passed as pointers, even when we use square brackets. 
+
+  ```c
+  #include <stdio.h>
+   
+  int fun(int ptr[])
+  {
+     int x = 10;
+   
+     // size of a pointer is printed
+     printf("sizeof(ptr) = %d\n", sizeof(ptr));
+   
+     // This allowed because ptr is a pointer, not array
+     ptr = &x;
+   
+     printf("*ptr = %d ", *ptr);
+   
+     return 0;
+  }
+  int main()
+  {
+     int arr[] = {10, 20, 30, 40, 50, 60};
+     fun(arr);
+     return 0;
+  }
+  ```
+
+  Output
+
+  ```shell
+  sizeof(ptr) = 4
+  *ptr = 10
+  ```
+
+### Difference between single quoted and double quoted declaration of char array?
+
+In C/C++, when a character array is initialized with a double quoted string and array size is not specified, compiler automatically allocates one extra space for string terminator ‘\0’. For example, following program prints 6 as output.
+
+```c
+#include<stdio.h>
+int main()
+{
+  char arr[] = "geeks"; // size of arr[] is 6 as it is '\0' terminated
+  printf("%d", sizeof(arr));
+  getchar();
+  return 0;
+}
+```
+
+If array size is specified as 5 in the above program then the program works without any warning/error and prints 5 in C, but causes compilation error in C++.
+
+```c
+#include<stdio.h>
+int main()
+{
+  char arr[5] = "geeks";  // arr[] is not terminated with '\0'
+                          // and its size is 5
+  printf("%d", sizeof(arr));
+  getchar();
+  return 0;
+}
+```
+
+When character array is initialized with comma separated list of characters and array size is not specified, compiler doesn’t create extra space for string terminator ‘\0’. For example, following program prints 5.
+
+```c
+#include<stdio.h>
+int main()
+{
+  char arr[]= {'g', 'e', 'e', 'k', 's'}; // arr[] is not terminated with '\0' and its size is 5
+  printf("%d", sizeof(arr));
+  getchar();
+  return 0;
+}
+```
+
+## Are array members deeply copied?
+
+In C/C++, we can assign a struct (or class in C++ only) variable to another variable of same type. When we assign a struct variable to another, all members of the variable are copied to the other struct variable. But what happens when the structure contains pointer to dynamically allocated memory and what if it contains an array?
+
+In the following C++ program, struct variable st1 contains ***pointer to dynamically allocated memory***. When we assign st1 to st2, str pointer of st2 also start pointing to same memory location. This kind of copying is called **Shallow Copy**.
+
+```c++
+# include <iostream>
+# include <string.h>
+using namespace std;
+struct test
+{
+  char *str;
+};
+ 
+int main()
+{
+  struct test st1, st2;
+ 
+  st1.str = new char[20];
+  strcpy(st1.str, "GeeksforGeeks");
+ 
+  st2 = st1;
+ 
+  st1.str[0] = 'X';
+  st1.str[1] = 'Y';
+ 
+  /* Since copy was shallow, both strings are same */
+  cout << "st1's str = " << st1.str << endl;
+  cout << "st2's str = " << st2.str << endl;
+ 
+  return 0;
+}
+```
+
+Output
+
+```shell
+Output:
+st1’s str = XYeksforGeeks
+st2’s str = XYeksforGeeks
+```
+
+Now, what about arrays? **The point to note is that the array members are not shallow copied, compiler automatically performs Deep Copy *for array members***. 
+
+In the following program, struct test contains array member str[]. When we assign st1 to st2, st2 has a new copy of the array. So st2 is not changed when we change str[] of st1. 
+
+```c++
+# include <iostream>
+# include <string.h>
+ 
+using namespace std;
+ 
+struct test
+{
+  char str[20];
+};
+ 
+int main()
+{
+  struct test st1, st2;
+ 
+  strcpy(st1.str, "GeeksforGeeks");
+ 
+  st2 = st1;
+ 
+  st1.str[0] = 'X';
+  st1.str[1] = 'Y';
+ 
+  /* Since copy was Deep, both arrays are different */
+  cout << "st1's str = " << st1.str << endl;
+  cout << "st2's str = " << st2.str << endl;
+ 
+  return 0;
+}
+```
+
+Output
+
+```shell
+st1’s str = XYeksforGeeks
+st2’s str = GeeksforGeeks
+```
+
+## What’s difference between char s[] and char *s in C?
+
+Consider below two statements in C. What is difference between two?
+
+```c
+char s[] = "geeksquiz";
+char *s  = "geeksquiz";
+```
+
+The statements ‘**char s[] = “geeksquiz”**‘ creates a character array which is like any other array and we can do all array operations. The only special thing about this array is, although we have initialized it with 9 elements, its size is 10 (Compiler automatically adds ‘\0').
+
+```c
+#include <stdio.h>
+int main()
+{
+    char s[] = "geeksquiz";
+    printf("%lu", sizeof(s));
+    s[0] = 'j';
+    printf("\n%s", s);
+    return 0;
+}
+```
+
+Output:
+
+```shell
+10
+jeeksquiz
+```
+
+The statement ‘**char \*s = “geeksquiz”** creates a string literal. The string literal is stored in read only part of memory by most of the compilers. The C and C++ standards say that string literals have static storage duration, any attempt at modifying them gives undefined behavior.  **s** is just a pointer and like any other pointer stores address of string literal. 
+
+```c
+#include <stdio.h>
+int main()
+{
+    char *s = "geeksquiz";
+    printf("%lu", sizeof(s));
+ 
+    // Uncommenting below line would cause undefined behaviour
+    // (Caused segmentation fault on gcc)
+    //  s[0] = 'j';  
+    return 0;
+}
+```
+
+Output
+
+```shell
+8
+```
+
+Running above program may generates a warning also “warning: deprecated conversion from string constant to ‘char*’”. This warning occurs because s is not a const pointer, but stores address of read only location. The warning can be avoided by pointer to const.
+
+```c
+#include <stdio.h>
+int main()
+{
+    const char *s = "geeksquiz";
+    printf("%lu", sizeof(s));
+    return 0;
+}
+```
+
 ## Strings as arrays
 
 - Strings stored as null-terminated character arrays (last character == ’\0’)
@@ -163,6 +516,72 @@ long arr [5]; /∗ sizeof(arr) == 40 ∗/ (64-bit OS)
 - Search functions: strchr(), strrchr()
   - **char ∗ strchr(str ,c);** – find char c in str, return pointer to first occurrence, or NULL if not found
   - **char ∗ strrchr (str ,c);** – find char c in str, return pointer to last occurrence, or NULL if not found
+
+## Difference between sizeof and strlen
+
+- strlen() is used to get the length of an array of chars / string.
+- sizeof() is used to get the actual size of any type of data in bytes.
+
+Besides, ***sizeof() is a compile-time expression giving you the size of a type or a variable's type***. It doesn't care about the value of the variable.
+
+***strlen() is a function that takes a pointer to a character, and walks the memory from this character on, looking for a NULL character***. It counts the number of characters before it finds the NULL character. In other words, it gives you the length of a C-style NULL-terminated string.
+
+The two are almost different. In C++, you do not need either very much, strlen() is for C-style strings, which should be replaced by C++-style std::strings, whereas the primary application for sizeof() in C is as an argument to functions like malloc(), memcpy() or memset(), all of which you shouldn't use in C++ (use new, std::copy(), and std::fill() or constructors). 
+
+```c
+char *str1 = "Sanjeev";
+char str2[] = "Sanjeev";
+
+printf("%d %d\n",strlen(str1),sizeof(str1));    
+printf("%d %d\n",strlen(str2),sizeof(str2));
+```
+
+Output:
+
+```
+7 4
+7 8
+```
+
+Because sizeof gives you the size in bytes of the data type. ***The data type of str1 is char* which 4 bytes***. In contrast, [strlen](http://www.kernel.org/doc/man-pages/online/pages/man3/strlen.3.html) gives you the length of the string in chars not including the null terminator, thus 7. ***The sizeof str2 is char array of 8 bytes***, which is the number of chars including the null terminator.
+
+str1 is a pointer to char and size of a pointer variable on your system is 4.
+ str2 is a array of char on stack, which stores 8 characters, "s","a","n","j","e","e","v","\0" so its size is 8
+
+***Important to note that size of pointer to various data type will be same, because they are pointing to different data types but they occupy only size of pointer on that system.***
+
+#### Question
+
+Why does n not equal to 8 in the following function?
+
+```c
+void foo(char cvalue[8])
+{
+	int n = sizeof (cvalue);
+}
+```
+
+But n *does* equal to 8 in this version of the function:
+
+```c
+void bar()
+{
+	char cvalue[8];
+	int n = sizeof (cvalue);
+}
+```
+
+Answer:
+
+Because you can't pass entire arrays as function parameters in C. **You're actually passing a pointer to it; the brackets are syntactic sugar.** There are no guarantees the array you're pointing to has size 8, since you could pass this function any character pointer you want.
+
+// These all do the same thing
+
+`void foo(char cvalue[8])`
+
+`void foo(char cvalue[])`
+
+`void foo(char *cvalue)`
 
 # User defined datatype
 
@@ -298,6 +717,251 @@ int i ;
   \__attribute__((aligned(x))) 	/∗gcc∗/
   __declspec((aligned(x))) 	/∗MSVC∗/
 
+### Struct Hack
+
+What will be the size of following structure?
+
+```c
+struct employee
+{
+    int     emp_id;
+    int     name_len;
+    char    name[0];
+};
+```
+
+4 + 4 + 0 = 8 bytes.
+
+And what about size of “name[0]”. In gcc, when we create an array of zero length, it is considered as array of incomplete type that’s why gcc reports its size as “0” bytes. This technique is known as “Stuct Hack”. 
+
+***When we create array of zero length inside structure, it must be (and only) last member of structure.*** 
+
+“Struct Hack” technique is used to create ***variable length member in a structure***. In the above structure, string length of “name” is not fixed, so we can use “name” as variable length array. 
+
+Let us see below memory allocation. 
+
+`struct employee *e = malloc(sizeof(*e) + sizeof(char) * 128);`
+
+is equivalent to
+
+```c
+struct employee
+{
+    int     emp_id;
+    int     name_len;
+    char    name[128]; /* character array of size 128 */
+};
+```
+
+Another example: 
+
+`struct employee *e = malloc(sizeof(*e) + sizeof(char) * 1024);`
+
+is equivalent to
+
+```c
+struct employee
+{
+    int     emp_id;
+    int     name_len;
+    char    name[1024]; /* character array of size 1024 */
+};
+```
+
+Now we can use “name” same as pointer. e.g.
+
+```c
+e->emp_id          = 100;
+e->name_len        = strlen("Geeks For Geeks");
+strncpy(e->name, "Geeks For Geeks", e->name_len);
+```
+
+When we allocate memory as given above, compiler will allocate memory to store “emp_id” and “name_len” plus contiguous memory to store “name”. When we use this technique, gcc guaranties that, “name” will get contiguous memory.
+
+### Structure Padding
+
+In order to align the data in memory, one or more empty bytes (addresses) are inserted (or left empty) between memory addresses which are allocated for other structure members while memory allocation. This concept is called structure padding.
+
+Architecture of a computer processor is such a way that it can read 1 word (4 byte in 32 bit processor) from memory at a time.
+
+To make use of this advantage of processor, data are always aligned as 4 bytes package which leads to insert empty addresses between other member’s address.
+
+Because of this structure padding concept in C, size of the structure is always not same as what we think.
+
+For example, please consider below structure that has 5 members.
+
+```c
+struct student
+{
+       int id1;
+       int id2;
+       char a;
+       char b;
+       float percentage;
+};
+```
+
+As per C concepts, int and float data types occupy 4 bytes each and char data type occupies 1 byte for 32 bit processor. So, only 14 bytes (4+4+1+1+4) should be allocated for above structure.
+
+But, this is wrong.  Do you know why?
+
+Architecture of a computer processor is such a way that it can read 1 word from memory at a time.
+
+1 word is equal to 4 bytes for 32 bit processor and 8 bytes for 64 bit processor. So, 32 bit processor always reads 4 bytes at a time and 64 bit processor always reads 8 bytes at a time.
+
+This concept is very useful to increase the processor speed.
+
+To make use of this advantage, **memory is arranged as a group of 4 bytes in 32 bit processor and 8 bytes in 64 bit processor.**
+
+Below C program is compiled and executed in 32 bit compiler. Please check memory allocated for structure1 and structure2 in below program.
+
+```c
+#include <stdio.h>
+#include <string.h>
+/*  Below structure1 and structure2 are same. 
+    They differ only in member's alignment */
+struct structure1 
+{
+       int id1;
+       int id2;
+       char name;
+       char c;
+       float percentage;
+};
+ 
+struct structure2 
+{
+       int id1;
+       char name;
+       int id2;
+       char c;
+       float percentage;                      
+};
+ 
+int main() 
+{
+    struct structure1 a;
+    struct structure2 b;
+ 
+    printf("size of structure1 in bytes : %d\n", 
+            sizeof(a));
+    printf ( "\n   Address of id1        = %u", &a.id1 );
+    printf ( "\n   Address of id2        = %u", &a.id2 );
+    printf ( "\n   Address of name       = %u", &a.name );
+    printf ( "\n   Address of c          = %u", &a.c );
+    printf ( "\n   Address of percentage = %u",
+                   &a.percentage );
+ 
+    printf("   \n\nsize of structure2 in bytes : %d\n",
+                   sizeof(b));
+    printf ( "\n   Address of id1        = %u", &b.id1 );
+    printf ( "\n   Address of name       = %u", &b.name );
+    printf ( "\n   Address of id2        = %u", &b.id2 );
+    printf ( "\n   Address of c          = %u", &b.c );
+    printf ( "\n   Address of percentage = %u",
+                   &b.percentage );
+    getchar();
+    return 0;
+}
+
+```
+
+**OUTPUT** :
+
+```shell
+size of structure1 in bytes : 16
+Address of id1 = 1297339856
+Address of id2 = 1297339860
+Address of name = 1297339864
+Address of c = 1297339865
+Address of percentage = 1297339868
+
+size of structure2 in bytes : 20
+Address of id1 = 1297339824
+Address of name = 1297339828
+Address of id2 = 1297339832
+Address of c = 1297339836
+Address of percentage = 1297339840
+```
+
+#### How to avoid structure padding in C?
+
+- \#pragma      pack ( 1 ) directive can be used for arranging memory for structure      members very next to the end of other structure members.
+- VC++      supports this feature. But, some compilers such as Turbo C/C++ does not      support this feature.
+- Please      check the below program where there will be no addresses (bytes) left      empty because of structure padding.
+
+```c
+#include <stdio.h>
+#include <string.h>
+ 
+/*  Below structure1 and structure2 are same. 
+    They differ only in member's allignment */
+ 
+#pragma pack(1)
+struct structure1 
+{
+       int id1;
+       int id2;
+       char name;
+       char c;
+       float percentage;
+};
+ 
+struct structure2 
+{
+       int id1;
+       char name;
+       int id2;
+       char c;
+       float percentage;                      
+};
+ 
+int main() 
+{
+    struct structure1 a;
+    struct structure2 b;
+ 
+    printf("size of structure1 in bytes : %d\n",
+                   sizeof(a));
+    printf ( "\n   Address of id1        = %u", &a.id1 );
+    printf ( "\n   Address of id2        = %u", &a.id2 );
+    printf ( "\n   Address of name       = %u", &a.name );
+    printf ( "\n   Address of c          = %u", &a.c );
+    printf ( "\n   Address of percentage = %u", 
+                   &a.percentage );
+ 
+    printf("   \n\nsize of structure2 in bytes : %d\n", 
+                   sizeof(b));
+    printf ( "\n   Address of id1        = %u", &b.id1 );
+    printf ( "\n   Address of name       = %u", &b.name );
+    printf ( "\n   Address of id2        = %u", &b.id2 );
+    printf ( "\n   Address of c          = %u", &b.c );
+    printf ( "\n   Address of percentage = %u", 
+                   &b.percentage );
+    getchar();
+    return 0;
+}
+
+```
+
+Output:
+
+```shell
+size of structure1 in bytes : 14
+Address of id1 = 3438103088
+Address of id2 = 3438103092
+Address of name = 3438103096
+Address of c = 3438103097
+Address of percentage = 3438103098
+
+size of structure2 in bytes : 14
+Address of id1 = 3438103072
+Address of name = 3438103076
+Address of id2 = 3438103077
+Address of c = 3438103081
+Address of percentage = 3438103082
+```
+
 ## Union
 
 A union is a variable that may hold objects of different types/sizes in the same memory location. 
@@ -335,6 +999,85 @@ struct variant
 	enum dtype t ;
 };
 ```
+
+We can access only one member of union at a time. We can’t access all member values at the same time in union. But, structure can access all member values at the same time. This is because, Union allocates one common storage space for all its members. Where as Structure allocates storage space for all its members separately.
+
+Many union variables can be created in a program and memory will be allocated for each union variable separately.
+
+Below table will help you how to form a C union, declare a union, initializing and accessing the members of the union.
+
+| **Using normal variable**                                    | **Using pointer variable**                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Syntax:**    union tag_name    {    data type var_name1;    data type var_name2;    data type var_name3;    }; | **Syntax:**    union tag_name    {    data type var_name1;    data type var_name2;    data type var_name3;    }; |
+| **Example:**    union student    {    int  mark;    char name[10];    float average;    }; | **Example:**    union student    {    int  mark;    char name[10];    float average;    }; |
+| **Declaring union using normal variable:**    union student report; | **Declaring union using pointer variable:**    union student *report, rep; |
+| **Initializing union using normal variable:**    union student report = {100, “Mani”, 99.5}; | **Initializing union using pointer variable:**    union student rep = {100, “Mani”, 99.5};    report = &rep; |
+| **Accessing union members using normal variable:**    report.mark;    report.name;    report.average; | **Accessing union members using pointer variable:**    report  -> mark;    report -> name;    report -> average; |
+
+```c
+#include <stdio.h>
+#include <string.h>
+ 
+union student 
+{
+            char name[20];
+            char subject[20];
+            float percentage;
+};
+ 
+int main() 
+{
+    union student record1;
+    union student record2;
+ 
+    // assigning values to record1 union variable
+       strcpy(record1.name, "Raju");
+       strcpy(record1.subject, "Maths");
+       record1.percentage = 86.50;
+ 
+       printf("Union record1 values example\n");
+       printf(" Name       : %s \n", record1.name);
+       printf(" Subject    : %s \n", record1.subject);
+       printf(" Percentage : %f \n\n", record1.percentage);
+ 
+    // assigning values to record2 union variable
+       printf("Union record2 values example\n");
+       strcpy(record2.name, "Mani");
+       printf(" Name       : %s \n", record2.name);
+ 
+       strcpy(record2.subject, "Physics");
+       printf(" Subject    : %s \n", record2.subject);
+ 
+       record2.percentage = 99.50;
+       printf(" Percentage : %f \n", record2.percentage);
+       return 0;
+}
+
+```
+
+**OUTPUT**:
+
+```shell
+Union record1 values example
+Name :
+Subject :
+Percentage : 86.500000;
+Union record2 values example
+Name : Mani
+Subject : Physics
+Percentage : 99.500000
+
+```
+
+**DIFFERENCE BETWEEN STRUCTURE AND UNION IN C:**
+
+| **C Structure**                                              | **C Union**                                                  |
+| :----------------------------------------------------------- | ------------------------------------------------------------ |
+| Structure   allocates storage space for all its members separately. | Union allocates one common storage space for all its members.    Union finds that which of its member needs high storage space   over other members and allocates that much space |
+| Structure occupies higher memory space.                      | Union occupies lower memory space over structure.            |
+| We can access all members of structure at a time.            | We can access only one member of union at a time.            |
+| Structure example:    <br />struct student    {    <br />int mark;    char name[6];    double average;    }; | Union example:    <br />union student    {   <br /> int mark;    char name[6];    double average;    }; |
+| For above structure, memory allocation will be like below.    int mark – 2B    char name[6] – 6B    double average – 8B     Total memory allocation = 2+6+8 = 16 Bytes | For above union, only 8 bytes of memory will be allocated since   double data type will occupy maximum space of memory over other data   types.     Total memory allocation = 8 Bytes |
 
 ## Bit fields
 
