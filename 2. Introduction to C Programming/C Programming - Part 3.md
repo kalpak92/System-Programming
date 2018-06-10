@@ -1096,3 +1096,214 @@ unsigned i n t is _ntsc :1;
 - the number after the colons specifies the width in bits.
 - each variables should be declared as **unsigned int**
 
+# Pointers to pointers
+
+- Address stored by pointer also data in memory
+
+- Can address location of address in memory – pointer to that pointer
+
+  ```c
+  int n = 3;
+  int ∗pn = &n; / ∗ pointer to n ∗ /
+  int ∗∗ppn = &pn; / ∗ pointer to address of n ∗ /
+  ```
+
+- Many uses in C: pointer arrays, string arrays.
+
+### Swapping pointers
+
+ The first thing you need to understand is that when you pass something to a function, that something is copied to the function's arguments.
+
+Suppose you have the following:
+
+```c
+void swap1(int a, int b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    assert(a == 17);
+    assert(b == 42);
+    // they're swapped!
+}
+
+int x = 42;
+int y = 17;
+swap1(x, y);
+assert(x == 42);
+assert(y == 17);
+// no, they're not swapped!
+```
+
+The original variables will not be swapped, because their values are copied into the function's arguments. The function then proceeds to swap the values of those arguments, and then returns. The original values are not changed, because the function only swaps its own private copies.
+
+Now how do we work around this? The function needs a way to refer to the original variables, not copies of their values. How can we refer to other variables in C? Using pointers.
+
+If we pass pointers to our variables into the function, the function can swap the values in *our* variables, instead of its own argument copies.
+
+```c
+void swap2(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    assert(*a == 17);
+    assert(*b == 42);
+    // they're swapped!
+}
+
+int x = 42;
+int y = 17;
+swap2(&x, &y); // give the function pointers to our variables
+assert(x == 17);
+assert(y == 42);
+// yes, they're swapped!
+```
+
+Notice how inside the function we're not assigning to the pointers, but assigning to what they point to. And the pointers point to our variables `x` and `y`. The function is changing directly the values stored in *our* variables through the pointers we give it. And that's exactly what we needed.
+
+Now what happens if we have two pointer variables and want to swap the *pointers* themselves (as opposed to the values they point to)?
+
+***If we pass pointers, the pointers will simply be copied (not the values they point to) to the arguments.***
+
+```c
+void swap3(int* a, int* b) {
+    int* temp = a;
+    a = b;
+    b = temp;
+    assert(*a == 17);
+    assert(*b == 42);
+    // they're swapped!
+}
+void swap4(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    assert(*a == 17);
+    assert(*b == 42);
+    // they're swapped!
+}
+
+int x = 42;
+int y = 17;
+int* xp = &x;
+int* yp = &y;
+
+swap3(xp, yp);
+assert(xp == &x);
+assert(yp == &y);
+assert(x == 42);
+assert(y == 17);
+// Didn't swap anything!
+
+swap4(xp, yp);
+assert(xp == &x);
+assert(yp == &y);
+assert(x == 17);
+assert(y == 42);
+// Swapped the stored values instead!
+```
+
+The function `swap3` only ***swaps its own private copies of our pointers that it gets in its arguments***. It's the same issue we had with `swap1`. And `swap4` is changing the values our variables point to, not the pointers! 
+
+We're giving the function a means to refer to the variables `x` and `y` but we want them to refer to `xp` and `yp`.
+
+How do we do that? We pass it their addresses!
+
+```c
+void swap5(int** a, int** b) {
+    int* temp = *a;
+    *a = *b;
+    *b = temp;
+    assert(**a == 17);
+    assert(**b == 42);
+    // they're swapped!
+}
+
+
+int x = 42;
+int y = 17;
+int* xp = &x;
+int* yp = &y;
+swap5(&xp, &yp);
+assert(xp == &y);
+assert(yp == &x);
+assert(x == 42);
+assert(y == 17);
+// swapped only the pointers variables
+```
+
+This way it swaps our pointer variables (notice how `xp` now points to `y`) but not the values they point to. We gave it a way to refer to our pointer variables, so it can change them!
+
+By now it should be easy to understand how to swap two strings in the form of `char*` variables. The swap function needs to receive pointers to `char*`.
+
+```c
+void swapStrings(char** a, char** b){
+    char *temp = *a;
+    *a = *b;
+    *b = temp;
+    assert(strcmp(*a, "world") == 0);
+    assert(strcmp(*b, "Hello") == 0);
+}
+
+char* x = "Hello";
+char* y = "world";
+swapStrings(&x, &y);
+assert(strcmp(x, "world") == 0);
+assert(strcmp(y, "Hello") == 0);
+```
+
+## Pointer arrays
+
+- Pointer array – array of pointers
+  - int ∗arr [20]; – an array of pointers to int’s
+  - char ∗arr[10]; – an array of pointers to char’s
+- Pointers in array can point to arrays themselves
+  - char ∗strs [10]; – an array of char arrays (or strings)
+
+Example:
+
+- Have an array int arr [100]; that contains some numbers
+- Want to have a sorted version of the array, but not modify arr
+- Can declare a pointer array int ∗ sorted_array[100]; containing pointers to elements of arr and sort the pointers instead of the numbers themselves
+- Good approach for sorting arrays whose elements are very large (like strings)
+
+### String arrays
+
+- An array of strings, each stored as a pointer to an array of chars
+
+- Each string may be of different length
+
+  ```c
+  char str1 [ ] = "hello" ; / ∗ length = 6 ∗ /
+  char str2 [ ] = "goodbye" ; / ∗ length = 8 ∗ /
+  char str3 [ ] = "ciao" ; / ∗ length = 5 ∗ /
+  char strArray [ ] = { str1 , str2 , str3 };
+  ```
+
+  Note that strArray contains only pointers, not the characters themselves!
+
+# Void pointers
+
+- C does not allow us to declare and use void variables.
+
+- void can be used only as return type or parameter of a function.
+
+- C allows void pointers
+
+- Question: What are some scenarios where you want to pass void pointers?
+
+  - void pointers can be used to point to any data type
+
+    ```C
+    int x; 
+    void∗ p=&x; /∗points to int ∗/
+    float f;
+    void∗ p=&f; /∗points to float ∗/
+    ```
+
+- **void pointers cannot be dereferenced**. The pointers should always be cast before dereferencing.
+
+```c
+void∗ p; printf ("%d",∗p); /∗ invalid ∗/
+void∗ p; int ∗px=(int∗)p; printf ("%d",∗px); /∗valid ∗/
+```
+
