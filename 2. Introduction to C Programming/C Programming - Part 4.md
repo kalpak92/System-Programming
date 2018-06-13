@@ -1,11 +1,13 @@
 # Using External Libraries
 
+[TOC]
+
 ## Symbols and libraries
 
 - External libraries provide a wealth of functionality – example: C standard library
-- Programs access libraries’ functions and variables via identifiers known as symbols
-- Header file declarations/prototypes mapped to symbols at compile time
-- Symbols linked to definitions in external libraries during linking
+- Programs access libraries’ functions and variables via identifiers known as **symbols**
+- Header file ->  ***declarations/prototypes mapped to symbols at compile time***
+- Symbols -> ***linked to definitions in external libraries during linking***
 - Our own program produces symbols, too
 
 Consider the simple hello world program written below:
@@ -54,14 +56,17 @@ $ nm symbolLinking.o
 ’T’ – (text) code; ’R’ – read-only memory; ’U’ - undefined symbol
 
 - Addresses all zero before linking; symbols not allocated memory yet
+
 - Undefined symbols are defined externally, resolved during linking
 
-Why aren’t symbols listed for other declarations in stdio.h?
+- Why aren’t symbols listed for other declarations in stdio.h?
+  - Compiler doesn’t bother creating symbols for unused function prototypes (saves space)
 
-- Compiler doesn’t bother creating symbols for unused function prototypes (saves space)
+What happens when we link?	
 
-What happens when we link?
-	gcc -Wall hello.o -o hello
+```shell
+gcc -Wall hello.o -o hello
+```
 
 - Memory allocated for defined symbols
 
@@ -91,10 +96,106 @@ Static linking is the result of the linker ***copying all library routines used 
 
 Dynamic linking is accomplished by ***placing the name of a sharable library in the executable image***. Actual linking with the library routines does not occur until the image is run, when both the executable and the library are placed in memory. An advantage of dynamic linking is that multiple programs can share a single copy of the library.
 
+### Static linkage
+
 - Functions, global variables must be allocated memory before use
+
 - Can allocate at compile time (static) or at run time (shared)
+
 - Advantages/disadvantages to both
-- Symbols in same file, other .o files, or static libraries (archives, .a files) – static linkage
-- Symbols in shared libraries (.so files) – dynamic linkage
+
+- ***Symbols in same file, other .o files, or static libraries (archives, .a files)* – static linkage**
+
+- ***Symbols in shared libraries (.so files)* – dynamic linkage**
+
 - gcc links against shared libraries by default, can force static linkage using **-static flag**
+
+- What happens if we statically link against the library?
+
+  ```shell
+  gcc -Wall -static hello.o -o hello
+  ```
+
+  Our executable now contains the symbol puts: .
+
+  ```shell
+  .
+  .
+  00000000004014c0 W puts
+  .
+  .
+  .
+  0000000000400304 T main
+  .
+  .
+  .
+  000000000046cd04 R msg
+  .
+  .
+  .
+  ```
+
+  ​	’W’: linked to another defined symbol
+
+- At link time, statically linked symbols added to executable
+
+- Results in much larger executable file (static – 688K, dynamic – 10K)
+
+- Resulting executable does not depend on locating external library files at run time
+
+- To use newer version of library, have to recompile
+
+### Dynamic linkage
+
+- Dynamic linkage occurs at run-time
+- During compile, linker just looks for symbol in external shared libraries
+- Shared library symbols loaded as part of **program startup** (before main())
+- Requires external library to define symbol exactly as expected from header file declaration
+  - changing function in shared library can break your program
+  - version information used to minimize this problem
+  - reason why common libraries like libc rarely modify or remove functions, even broken ones like gets()
+
+## Linking external libraries
+
+- Programs linked against C standard library by default
+- To link against library libnamespec.so or libnamespec.a, use compiler flag ***-lnamespec*** to link against library
+- Library must be in library path (standard library directories + directories specified using ***-L directory*** compiler flag) 
+- Use ***-static*** for force static linkage
+
+### Loading shared libraries
+
+- Shared library located during compile-time linkage, but needs to be located again during run-time loading.
+- Shared libraries located at run-time using linker library ***ld.so***
+- Whenever shared libraries on system change, need to run ***ldconfig*** to update links seen by ***ld.so***
+- During loading, symbols in dynamic library are allocated memory and loaded from shared library file.
+
+### Loading shared libraries on demand
+
+- In Linux, can load symbols from shared libraries on demand using functions in dlfcn.h
+
+- Open a shared library for loading: 
+
+  ```c
+  void ∗ dlopen(const char ∗file, int mode); 
+  ```
+
+  values for mode: combination of **RTLD_LAZY** (lazy loading of library), **RTLD_NOW** (load now), **RTLD_GLOBAL** (make symbols in library available to other libraries yet to be loaded), **RTLD_LOCAL** (symbols loaded are accessible only to your code)
+
+
+- Get the address of a symbol loaded from the library: 
+
+  ```c
+  void ∗ dlsym(void ∗ handle, const char ∗ symbol_name); 
+  ```
+
+  handle from call to dlopen; returned address is pointer to variable or function identified by **symbol_name**
+
+
+- Need to close shared library file handle after done with symbols in library: 
+
+  ```c
+  int dlclose(void ∗ handle);
+  ```
+
+  These functions are not part of C standard library; need to link against library ***libdl: -ldl*** compiler flag.
 
