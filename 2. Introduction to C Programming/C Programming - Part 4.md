@@ -62,7 +62,7 @@ $ nm symbolLinking.o
 - Why aren’t symbols listed for other declarations in stdio.h?
   - Compiler doesn’t bother creating symbols for unused function prototypes (saves space)
 
-What happens when we link?	
+		at happens when we link?	
 
 ```shell
 gcc -Wall hello.o -o hello
@@ -199,3 +199,56 @@ Dynamic linking is accomplished by ***placing the name of a sharable library in 
 
   These functions are not part of C standard library; need to link against library ***libdl: -ldl*** compiler flag.
 
+## Creating libraries
+
+- Libraries contain C code like any other program.
+
+- Static or shared libraries compiled from (un-linked) object files created using gcc.
+
+- Compiling a static library: 
+
+  - compile, but do not link source files:
+
+    ```shell
+    gcc -g -Wall -c infile.c -o outfile.o
+    ```
+
+  - collect compiled (unlinked) files into an archive:
+
+    ```shell
+    ar -rcs libname.a outfile1.o outfile2.o ...
+    ```
+
+- Compile and do not link files using `gcc`:
+
+  ```shell
+  gcc -g -Wall -fPIC -c infile.c -o outfile.o
+  ```
+
+- **-fPIC option**: create position-independent code, since code will be repositioned during loading
+
+- Link files using ld to create a shared object (.so) file:
+
+  ```shell
+  ld -shared -soname libname.so -o libname.so.version -lc outfile1.o outfile2.o ...
+  ```
+
+- If necessary, add directory to LD_LIBRARY_PATH environment variable, so ld.so can find file when loading at run-time
+
+- Configure ld.so for new (or changed) library:
+
+  ```shell
+  ldconfig -v
+  ```
+
+## Summary
+
+- linking: binds symbols to addresses.
+- static linkage: occurs at compile time (static libraries).
+- dynamic linkage: occurs at run time (shared libraries).
+- shared libraries:
+  - **ld.so** - locates shared libraries 
+  - **ldconfig** - updates links seen by ld.so
+  - **dlopen()**, **dlsym()**, **dlclose()** - load shared libraries on demand.
+- compiling static libraries: **gcc**, **ar**
+- compiling shared libraries: **gcc**, **ldconfig**
