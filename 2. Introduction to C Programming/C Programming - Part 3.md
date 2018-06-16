@@ -1,5 +1,7 @@
 # Pointers and Memory Address
 
+[TOC]
+
 ## Physical and virtual memory
 
 - Physical memory: physical resources where data can be stored and accessed by your computer
@@ -735,7 +737,7 @@ str1 is a pointer to char and size of a pointer variable on your system is 4.
 
 ***Important to note that size of pointer to various data type will be same, because they are pointing to different data types but they occupy only size of pointer on that system.***
 
-#### Question
+### Question
 
 Why does n not equal to 8 in the following function?
 
