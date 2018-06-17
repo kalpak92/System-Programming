@@ -51,7 +51,7 @@ A typical memory representation of C program consists of following sections.
 - Stack
 - Heap 
 
-![1529139776670](C:\Users\kals9\AppData\Local\Temp\1529139776670.png)
+![1529139776670](https://github.com/kalpak92/System-Programming/blob/master/2.%20Introduction%20to%20C%20Programming/Memory%20Layout.png)
 
 ### 1. Text Segment
 
