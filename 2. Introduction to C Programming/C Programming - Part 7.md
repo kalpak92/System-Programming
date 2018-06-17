@@ -30,7 +30,7 @@ You want to convert a colored image to black and white. The job can be done by c
 
 ## Process
 
-![1529228525374](C:\Users\kals9\AppData\Local\Temp\1529228525374.png)
+![1529228525374](https://github.com/kalpak92/System-Programming/blob/master/2.%20Introduction%20to%20C%20Programming/process_pic.png)
 
 Each process is allocated a unique number, process identifier (PID). It's an integer between 2 and 32,768. When a process is started, the numbers restart from 2, and the number 1 is typically reserved for the init process as shown in the above example. The process #1 manages other processes.When we run a program, the code that will be executed is stored in a disk file. In general, a linux process can't write to the memory area. The area is for holding the program code so that the code can be loaded into memory as read-only (so, it can be safely shared). 
 
