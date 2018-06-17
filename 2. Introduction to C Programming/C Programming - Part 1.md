@@ -104,6 +104,8 @@ gcc -v -o hello.exe hello.c
 
 You can use the `-D*name*` option to define a macro, or `-D*name*=*value*` to define a macro with a value. The `*value*` should be enclosed in double quotes if it contains spaces.
 
+https://www.calleerlandsson.com/the-four-stages-of-compiling-a-c-program/
+
 ### Most Frequently Used GCC Compiler Command Line Options
 
 1. #### Specify the Output Executable Name
